@@ -5,8 +5,14 @@ using namespace std;
 
 Rectangle::Rectangle(Vector2f size)
 {
+
+    this->shape = RectangleShape(size);
+    this->shape.setFillColor(Color::Red);
+    this->speed = Vector2f(0.f, 0.f);
+    this->objective = Vector2f(0.f, 2.f);
+
     /**  (4pts)
-        Inicializa las variables: 
+        Inicializa las variables:
         - shape: un rectángulo de tamaño size.
         - speed: un Vector2f con valores (0, 0).
         - objective: un Vector2f con valores (0, 0).
@@ -16,6 +22,11 @@ Rectangle::Rectangle(Vector2f size)
 
 Rectangle::Rectangle(Vector2f size, Vector2i position)
 {
+    this->shape = RectangleShape(size);
+    this->shape.setFillColor(Color::Red);
+    this->shape.setPosition(Vector2f(position));
+    this->speed = Vector2f(0.f, 0.f);
+
     /** (5pts)
         Inicializa las variables:
         - shape: un rectángulo de tamaño size.
@@ -28,6 +39,17 @@ Rectangle::Rectangle(Vector2f size, Vector2i position)
 
 void Rectangle::update()
 {
+    if (abs(this->shape.getPosition().x - objective.x) < 5 && abs(this->shape.getPosition().y - objective.y) < 5)
+    {
+        this->shape.setFillColor(Color::Green);
+        this->speed = Vector2f(0, 0);
+    }
+
+    else
+    {
+        this->shape.setFillColor(Color::Red);
+        this->shape.move(speed);
+    }
     /**(6pts)
         Mueve el cuadrado.
         Si el cuadrado está a menos de 5 pixeles del objetivo, detén el cuadrado y píntalo de verde.
@@ -38,6 +60,10 @@ void Rectangle::update()
 
 void Rectangle::setObjective(Vector2f objective)
 {
+    this->objective = objective;
+    float dx = objective.x - this->shape.getPosition().x, dy = objective.y - this->shape.getPosition().y;
+    float d = sqrt(dx * dx + dy * dy);
+    this->speed = Vector2f(4 * dx / d, 4 * dy / d);
     /**(5pts)
         Asigna objetivo a la propiedad objective.
         Calcula la dirección hacia el objetivo y la velocidad necesaria para llegar al objetivo:
